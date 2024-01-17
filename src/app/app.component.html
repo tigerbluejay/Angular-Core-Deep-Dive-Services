@@ -7,7 +7,15 @@
 
 <div>
 
-  <div class="courses">
+  <!-- The as gives a name to the expression on the left.
+  In general if you are fetching data from the backend
+  and you are receiving an observable in return from a service
+  in your service layer, it is recommended to pass the data to
+  the template using the async pipe, because this has the advantage
+  that whenever the component is destroyed the async pipe
+  will take care of unsubcribing from the observable.
+  This is good to avoid memory leaks. -->
+  <div class="courses" *ngIf="courses$ | async as courses">
 
     <course-card *ngFor="let course of courses"
                  [course]="course">
