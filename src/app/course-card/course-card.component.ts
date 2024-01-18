@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import {Course} from '../model/course';
 import {CourseImageComponent} from '../course-image/course-image.component';
+import { CoursesService } from '../services/courses.service';
 
 @Component({
     selector: 'course-card',
@@ -30,16 +31,26 @@ export class CourseCardComponent implements OnInit {
     @Output('courseChanged')
     courseEmitter = new EventEmitter<Course>();
 
-
-    constructor() {
+    // first we define coursesService in the service folder
+    // the we inject it in the application constructor app.components.ts
+    // now we can inject it at the compenent level via the constructor
+    constructor(private coursesService: CoursesService) {
 
     }
 
     ngOnInit() {
-
+    // after injecting in the constructor (asbove) we now
+    // test whether we can access the coursesService object
+    console.log("coursesService course card", this.coursesService);
     }
 
-
+    // this method captures the modified title of the course.
+    // we only override the description property of the course
+    // on the course card view we have a button html element
+    // which is subscribed to the click event and triggers
+    // this method (onSaveClicked) capturing the new course title
+    // then this method emits this changed title on a courseChanged object
+    // which is the output
     onSaveClicked(description:string) {
 
         this.courseEmitter.emit({...this.course, description});
