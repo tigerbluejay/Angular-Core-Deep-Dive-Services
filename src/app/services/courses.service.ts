@@ -21,9 +21,12 @@ import { Course } from '../model/course';
 export class CoursesService {
 
   constructor(private http: HttpClient) { 
-
+    // this is to verify that the courses service
+    // is created only once. It is a singleton.
+      console.log("Creating courses service");
   }
 
+  // Observable<Course[]> is the return type of loadCourses()
   loadCourses(): Observable<Course[]> {
 
     const params = new HttpParams()

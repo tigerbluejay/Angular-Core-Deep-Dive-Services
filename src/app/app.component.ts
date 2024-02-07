@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
   // we define an observable variable
   // the values emited by this observable over time
   // are going to be each value, an array of courses.
+  // the observable is courses$ and each value emitted
+  // by the observable will be an array of courses.
   courses$ : Observable<Course[]>;
 
   // declare a reference to the service
@@ -68,6 +70,7 @@ export class AppComponent implements OnInit {
     console.log(this.coursesService);
   }
 
+  // if we don't subscribe to the observable, then the course will not be saved
   save(course:Course){
     this.coursesService.saveCourse(course)
         .subscribe(
