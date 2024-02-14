@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, InjectionToken, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, InjectionToken, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {COURSES, findCourseById} from '../db-data';
 import {Course} from './model/course';
 import {CourseCardComponent} from './course-card/course-card.component';
@@ -6,11 +6,24 @@ import {HighlightedDirective} from './directives/highlighted.directive';
 import {Observable} from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CoursesService } from './services/courses.service';
+import { ParseErrorLevel } from '@angular/compiler';
+import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from './config';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  // here we are injecting a plain javascript object
+  // defined in config.ts
+  // providers: [
+  //   {provide: CONFIG_TOKEN, useFactory: () => APP_CONFIG}
+  // ]
+  // alternative syntax
+  // providers: [
+  //   {provide: CONFIG_TOKEN, useValue: APP_CONFIG}
+  // ]
+  // instead of doing "providers" here, we define in 
+  // config.ts ProvidedIn to make the injectable "tree shakable"
 })
 export class AppComponent implements OnInit {
 
@@ -33,8 +46,12 @@ export class AppComponent implements OnInit {
 
   // }
   // We moved the Http Client to the service root
-  constructor(private coursesService: CoursesService) {
-
+  constructor(private coursesService: CoursesService,
+    //we also want to inject a plain javascript object
+    // here we are injecting a plain javascript object
+    // defined in config.ts
+    @Inject(CONFIG_TOKEN) private config: AppConfig) {
+      console.log(config);
   }
 
   // lifecycle hook - trigger a backend http call
@@ -215,3 +232,130 @@ WHEN WE DONT WRITE OUR OWN PROVIDER */
 
 
 /* TREE SHAKABLE PROVIDERS */
+// Instead of injecting at the app.component.ts level the CoursesService.
+// We can inject it at the courses.service.ts level.
+// This is true whenever we are injecting an application singleton, that is 
+// we are injecting a single instance of the service for the whole application.
+// If again, our subcomponents had states specific to the components, then in that case 
+// we would want to inject at the subcomponent level.
+
+// Why would we do this? 
+// To avoid loading our application bundle with unnecessary code.
+
+// To inject at the courses.service.ts level we would write 
+// @Injectable({
+//   providedIn: 'root'
+// })
+
+// We could also be more verbose using: 
+// @Injectable({
+//   providedIn: 'root',
+//   useClass: CoursesService
+// })
+
+// although this might be redundant. As would be the alternative syntax:
+
+// We could also be more verbose using: 
+// @Injectable({
+//   providedIn: 'root',
+//   useFactory: (http) => new CoursesService(http)
+//   deps: [httpClient]
+// })
+
+// Whenever we are using the @Injectable syntax at the course.services.ts level.
+// We should remove the following syntax from the components or root level components 
+
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })
+
+
+/* ADVANCED DEPENDENCY INJECTION */
+/* INJECTING THINGS OTHER THAN CLASSES
+LIKE A PLAIN JAVASCRIPT OBJECT */
+
+// The CoursesService we have been injecting is an instance of a class service.
+// example worked on: config.ts and app.component.ts and maybe courses.service.ts
+
+
+/* ADVANCED DEPENDENCY INJECTION */
+/* OPTIONAL, SELF AND SKIP SELF DECORATORS */
+// Most of the time we won't need them, but we can use them
+
+// @Optional allows us to not define a provider and
+// allows us to handle programmatically the cases when the
+// injected service defined in the constructor is expected but not used.
+// in the rest of the code
+// without getting the error we would get for using a service in
+// the constructor that has no provider 
+
+// for example in app.component we could do
+// constructor(
+//  @Optional() private coursesService: CoursesService)
+// {}
+
+// @Self makes sure that the injected service defined in the
+// constructor comes from
+// the same component class and not from a parent element in
+// the hierarchy.
+
+// if for example we have defined in app.component
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })
+// and in a nested component course-card we also have 
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })
+// we define in course-card.component
+// constructor(@Self() private coursesService: CoursesService){}
+// then Self indicates that the course card component provider will
+// be used.
+
+// @Skip-self makes sure that the injected service defined in the
+// constructor comes from
+// the parent class and not from the same component class.
+// if for example we have defined in app.component
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })
+// and in a nested component course-card we also have 
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })
+// we define in course-card.component
+// constructor(@Skip-self() private coursesService: CoursesService){}
+// then Skip-self indicates that the app.component (parent) provider will
+// be used.
+
+/* ADVANCED DEPENDENCY INJECTION */
+/* HOST DECORATOR */
+// When we have a directive like "highlighted", which might be applied
+// to an element such as "course-card", we say that course card is the
+// host of the highlighted directive.
+// With this in mind, when we want to inject the CoursesService and we
+// want the provider to be course-card (the host element) and not necessarily
+// an element higher in the hierarchy like app.component for example, we
+// use the @Host decorator in the constructor of the directive.
+// Like this:
+// In highlighted.directive.ts
+// constructor(@Host() private coursesService: CoursesService){
+//   console.log('coursesService highlighted' + CoursesService.id);
+// }
+// And of course we have to define the provider in the host element so 
+// in course-card.component.ts we do 
+// @Component({
+//   providers: [
+//     CourseService
+//   ]
+// })

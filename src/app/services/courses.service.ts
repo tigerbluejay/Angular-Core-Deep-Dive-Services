@@ -18,6 +18,7 @@ import { Course } from '../model/course';
 // an http request, it simply calls the loadCourses()
 // method, which has all the logic incapsulated in this class.
 
+
 export class CoursesService {
 
   constructor(private http: HttpClient) { 
