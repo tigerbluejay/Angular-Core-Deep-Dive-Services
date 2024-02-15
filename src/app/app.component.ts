@@ -35,7 +35,15 @@ export class AppComponent implements OnInit {
   // are going to be each value, an array of courses.
   // the observable is courses$ and each value emitted
   // by the observable will be an array of courses.
+  // courses$ : Observable<Course[]>;
+
+  // we use this hardcoded variable obtaining data from
+  // the local data file to demonstrate "default/standard change detection"
+  // courses = COURSES;
+
+  // We now use the observable to show OnPush change detection
   courses$ : Observable<Course[]>;
+
 
   // declare a reference to the service
   // and we inject it (dependency injection)
@@ -81,10 +89,13 @@ export class AppComponent implements OnInit {
     // this.courses$ = this.http.get<Course[]>('/api/courses', {params});
     // we moved this logic in the line above to the service folder
     // and so now we call the loadCourses method in the services folder
-    this.courses$ = this.coursesService.loadCourses();
+    // this.courses$ = this.coursesService.loadCourses();
 
     // we test the injected coursesService
-    console.log(this.coursesService);
+    // console.log(this.coursesService);
+
+    // to demonstrate OnPush change detection
+    this.courses$ = this.coursesService.loadCourses(); 
   }
 
   // if we don't subscribe to the observable, then the course will not be saved
@@ -93,6 +104,24 @@ export class AppComponent implements OnInit {
         .subscribe(
           () => console.log('Course Saved')
         );
+  }
+
+  onEditCourse(){
+
+    // mutating the javascript object directly
+    // will not work with OnPush change detection
+    // this.courses[0].description  = 'New Value!';
+
+    // const course = this.courses[0]    
+    // here we create a copy of the 0 course
+    // const newCourse:any = {...course}
+    // mutating a not previously existing object
+    // but one we've just created
+    // newCourse.description = 'New Value!';
+    // this.courses[0] = newCourse;
+    // here we provided a completely different object
+    // so we got a different input to a different javascript object.
+
   }
 }
 

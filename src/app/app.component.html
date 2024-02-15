@@ -7,6 +7,11 @@
 
 <div>
 
+  <div class="demo">
+    <button (click)="onEditCourse()">Edit Course</button>
+  </div>
+
+
   <!-- The as gives a name to the expression on the left.
   In general if you are fetching data from the backend
   and you are receiving an observable in return from a service
@@ -15,7 +20,10 @@
   that whenever the component is destroyed the async pipe
   will take care of unsubcribing from the observable.
   This is good to avoid memory leaks. -->
+  <!-- <div class="courses" *ngIf="courses$ | async as courses"> -->
+  <!-- <div class="courses"> -->
   <div class="courses" *ngIf="courses$ | async as courses">
+
 
   <!-- here we detect the event triggered when we hit the save button-->
   <!-- here we subscribe to courseChanged event

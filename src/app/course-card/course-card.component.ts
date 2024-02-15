@@ -1,6 +1,7 @@
 import {
     AfterContentInit,
     AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     ContentChildren,
     ElementRef,
@@ -18,7 +19,8 @@ import { CoursesService } from '../services/courses.service';
 @Component({
     selector: 'course-card',
     templateUrl: './course-card.component.html',
-    styleUrls: ['./course-card.component.css']
+    styleUrls: ['./course-card.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CourseCardComponent implements OnInit {
 
@@ -57,6 +59,11 @@ export class CourseCardComponent implements OnInit {
 
     }
 
+    // to demonstrate default/standard change detection
+    // we define the event handler method of the course-card component
+    onTitleChanged(newTitle:string){
+        this.course.description = newTitle;
+    }
 
 
 

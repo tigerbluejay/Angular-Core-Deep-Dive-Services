@@ -9,7 +9,10 @@
 
   <div class="course-description">
 
-    Edit Title: <input #courseTitle [value]="course.description">
+    <!-- We add the keyup event and assign to it the onTitleChanged()
+    event handler, then we pass as parameter the input's value -->
+    Edit Title: <input #courseTitle [value]="course.description"
+                  (keyup)="onTitleChanged(courseTitle.value)">
 
   </div>
 
@@ -28,7 +31,58 @@
 </div>
 
 
+<!-- DEFAULT/STANDARD CHANGE DETECTION
+  Keeps the view in sync with the data.
 
+If we edit the title in the input box, the title is changed on keyup.
+Angular will update the view and reflect the latest changes to the model
+on the view.
+Angular will go through all the input template expressions and decide if something
+has changed, and it will update the part of the view that has changed accordingly.
+Which expressions?
+course.description, course.category, course.iconUrl
+Angular is going to scan through the whole component tree, it will change each
+component if it has changed, and it will update it. It will do so after the key event
+or click event, or also ajax requests, a settimeout event and so on.
 
+Angular is trying to display data from MUTABLE javascript objects on the screen.
+If something happens at the browser for example a native DOM click event,
+and that asynchronous event can modify the data, the only way that angular has
+to make sure the changes are presisted is to go through all the component tree
+and update the components whenever necessary.
 
+Checking all the expressions of all the component tree might be a bit expensive
+in large applications. But the vast majority of applications will not run into 
+performance issues. -->
 
+<!-- ON PUSH CHANGE DETECTION
+  If our component uses onPush change detection 
+  (by defining the option named changeDetection on the @Component decorator) 
+  Angular will not check changes in the template expressions
+  instead Angular will check for changes in the @Input data of the component
+
+  If an event handler gets triggered, the on push change detection will work
+
+  On push is more performant because it checks only the inputs. If we know an
+  input has not changed, then we can skip a whole branch of components entirely
+  For example if the input in card-component did not change, then the children
+  of the card-component would not be checked.
+
+  If we use deafult change detection and we modify a child component model 
+  in the parent model, the change will be reflected when the eventhandler is
+  called. Because Angular will go down the hierarchy tree and check every
+  template element of every component.
+  But with OnPush, it wont. With OnPush a part of the component tree is not
+  traversed.
+
+  Whenever one of the input values is changed, OnPush works.
+  OnPush is also triggered in response to an event handler.
+
+-->
+
+<!-- ON PUSH CHANGE DETECTION WITH OBSERVABLE STREAMS -->
+<!-- OnPush Change Detection will look at not only the inputs of each
+component to see if they have changed, but will also look at any 
+observable streams that are registered in the template using the async pipe
+and see if new values got emitted by the registered observable:-->
+<!-- *ngIf="(courses$ | async) as courses" -->
