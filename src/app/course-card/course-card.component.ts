@@ -1,6 +1,7 @@
 import {
     AfterContentInit,
     AfterViewInit,
+    Attribute,
     ChangeDetectionStrategy,
     Component,
     ContentChildren,
@@ -36,8 +37,10 @@ export class CourseCardComponent implements OnInit {
     // first we define coursesService in the service folder
     // the we inject it in the application constructor app.components.ts
     // now we can inject it at the compenent level via the constructor
-    constructor(private coursesService: CoursesService) {
+    constructor(private coursesService: CoursesService,
+        @Attribute('type') private type: string) {
 
+            console.log(type);
     }
 
     ngOnInit() {

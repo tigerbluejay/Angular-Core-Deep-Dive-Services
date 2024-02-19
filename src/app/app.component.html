@@ -22,7 +22,8 @@
   This is good to avoid memory leaks. -->
   <!-- <div class="courses" *ngIf="courses$ | async as courses"> -->
   <!-- <div class="courses"> -->
-  <div class="courses" *ngIf="courses$ | async as courses">
+  <!-- <div class="courses" *ngIf="courses$ | async as courses"> -->
+  <div class="courses">
 
 
   <!-- here we detect the event triggered when we hit the save button-->
@@ -30,13 +31,16 @@
     which is defined in the course-card.component.ts file
     which has an emitter that emits a course
   and we call the save method and we pass the course emitted by the event-->
-    <course-card *ngFor="let course of courses"
+   <!-- here we are defining an attribute, attribute 'type' -->
+
+  <course-card *ngFor="let course of courses"
                  (courseChanged)="save($event)"
+                 type="beginner"
                  [course]="course">
 
       <course-image [src]="course.iconUrl"></course-image>
 
-    </course-card>
+   </course-card>
 
   </div>
 

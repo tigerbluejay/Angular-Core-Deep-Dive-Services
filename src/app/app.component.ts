@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, InjectionToken, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Attribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, Inject, InjectionToken, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {COURSES, findCourseById} from '../db-data';
 import {Course} from './model/course';
 import {CourseCardComponent} from './course-card/course-card.component';
@@ -24,7 +24,9 @@ import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from './config';
   // ]
   // instead of doing "providers" here, we define in 
   // config.ts ProvidedIn to make the injectable "tree shakable"
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AppComponent implements OnInit {
 
   // courses member variable
@@ -42,8 +44,13 @@ export class AppComponent implements OnInit {
   // courses = COURSES;
 
   // We now use the observable to show OnPush change detection
-  courses$ : Observable<Course[]>;
+  // courses$ : Observable<Course[]>;
 
+  // we now define a synchronous variable to demonstrate Custom Change
+  // detection
+    courses: Course[];
+
+  // loaded = false;
 
   // declare a reference to the service
   // and we inject it (dependency injection)
@@ -59,7 +66,7 @@ export class AppComponent implements OnInit {
     // here we are injecting a plain javascript object
     // defined in config.ts
     @Inject(CONFIG_TOKEN) private config: AppConfig) {
-      console.log(config);
+      console.log(config);  
   }
 
   // lifecycle hook - trigger a backend http call
@@ -95,8 +102,27 @@ export class AppComponent implements OnInit {
     // console.log(this.coursesService);
 
     // to demonstrate OnPush change detection
-    this.courses$ = this.coursesService.loadCourses(); 
+    // this.courses$ = this.coursesService.loadCourses(); 
+
+    // to demonstrate custom change detection
+    this.coursesService.loadCourses().subscribe(courses => {
+      this.courses = courses
+      // this.loaded = true;      
+    }); 
+
+
   }
+
+  // ngDoCheck(): void {
+  //   console.log('ngDoCheck is called');
+  //   // if data is already loaded - the first time
+  //   if (this.loaded) {
+  //     this.cd.markForCheck(); // this will inform Angular
+  //     // that this component should be checked for changes.
+  //     console.log("called cd.markforCheck()");
+  //     this.loaded = undefined;
+  //   }
+  // }
 
   // if we don't subscribe to the observable, then the course will not be saved
   save(course:Course){
@@ -388,3 +414,101 @@ LIKE A PLAIN JAVASCRIPT OBJECT */
 //     CourseService
 //   ]
 // })
+
+/// --------------------------------------------------------------
+/// --------------------------------------------------------------
+/// --------------------------------------------------------------
+
+// THE ATTRIBUTE DECORATOR (PERFORMANCE OPTIMIZATION - ONE TIME BINDING)
+// The attribute decorator is intended as a performance optimization
+// that can replace those inputs that are not meant to change on any
+// browser requests.
+// In course-card.component.ts:
+//   constructor(private coursesService: CoursesService,
+  //     @Attribute('type') private type: string) {
+  //     console.log(type);
+  // }
+// In app.component.html:
+//   <course-card *ngFor="let course of courses"
+//   type = "beginner">
+//   </course-card>
+
+
+// CUSTOM CHANGE DETECTION (PERFORMANCE OPTIMIZATION)
+// For very exceptional situations:
+// How to inform Angular manually that change detection 
+// should be performed for a particular component.
+// Each application component has its own change detector that can be injected
+// into the constructor of each component.
+// There is also a function called MarkForCheck() which marks the component
+// for checking changes on it.
+// There is also a lifecycle hook called ngDoCheck (defined in the DoCheck interface)
+// which checks for
+// changes on each component. This is where we would like to implement
+// change detection logic.
+
+// In app.component.ts: 
+//(1)
+// (In @Component)
+//changeDetection: ChangeDetectionStrategy.OnPush
+//(2)
+// export class AppComponent implements OnInit, DoCheck {
+// ...}
+//(3)
+// loaded = false; // loaded flag
+//(4) constructor use of changeDetectorRef
+// constructor(private coursesService: CoursesService,
+//   @Inject(CONFIG_TOKEN) private config: AppConfig,
+//   private cd: ChangeDetectorRef) {}
+//(5) use of the flag on ngOnInit:
+// ngOnInit() {
+//   this.coursesService.loadCourses().subscribe(courses => {
+//     this.courses = courses
+//     this.loaded = true;      
+//   }); 
+//(6)
+// ngDoCheck(): void {
+//   console.log('ngDoCheck is called');
+//   // if data is already loaded - the first time
+//   if (this.loaded) {
+//     this.cd.markForCheck(); // this will inform Angular
+//     // that this component should be checked for changes.
+//     console.log("called cd.markforCheck()");
+//     this.loaded = undefined;
+//   }
+
+
+/// --------------------------------------------------------------
+/// --------------------------------------------------------------
+/// --------------------------------------------------------------
+
+// LIFECYCLE HOOKS:
+// ngOnInit() 
+// initialization method called when the class is created
+// only called once, after the constructor and inputs
+// constructors are only used to saving dependencies into variables
+// initalization logic goes into ngOnInit
+
+// ngOnDestroy() (onDestroy interface)
+// very rarely needed in practise
+// called whenever the component is destroyed
+// that is when the component "dissapears from the screen"
+// good for releasing resources and open connections
+// maybe to release subscriptions to observables
+
+// ngOnChanges() (onChanges interface)
+// if we want to get notified when an input property 
+// of a component has changed
+// called before ngOnInit (once)
+// called (again) whenever something changes in the component lifecycle
+// takes an argument called the "changes" argument
+    // property of type SimpleChange, contains the current value
+    // and the previous value of the property
+// it will be triggered whenever any of the input properties of the
+// component changes.
+// it will be triggered if we change the reference to the input object
+// it will not be triggered if we mutate or modify the properties of
+// an input of a component. (modify an input object directly)
+
+
+
