@@ -71,3 +71,54 @@ export class CourseCardComponent implements OnInit {
 
 
 }
+
+// LIFECYCLE HOOKS (continued): AFTERCONTENTCHECKED
+// ngAfterContentChecked() (AfterContentChecked interface)
+// Called after the contents of a component (nested tags within the component) are checked for changes.
+// For example the course-image tag inside the course-card component (in app.component.html)
+// Called whenever angular triggers change detection (for example after loading the page, 
+// after receiving content from the backend)
+// We should implement code that is lightweight on this method because the hook is called multiple times.
+
+// We can modify properties of the component, but not properties of the content of the component,
+// because ngAfterContentChecked() will be called AFTER checking the content of the component.
+// If we try to do this, we'll get an error. This is because the content part is checked first,
+// then the hook is called - changing properties of the component if we decide to do so programmatically-,
+// and then the component is checked.
+// So this is an ideal place to modify properties of the component (but not the content of that component)
+
+// It is a good place to make last second modifications to the data of the component.
+
+
+// LIFECYCLE HOOKS (continued): AFTERVIEWCHECKED
+// ngAfterViewChecked() (AfterViewChecked interface)
+// Called after AfterContentChecked() with each change detection execution.
+// Angular checks the template of the component (except the contents of the component)
+// So if we try to modify programmatically a property in a component it will return an error.
+// This hook is useful to implement for example scrolling logic since everything has been checked.
+// Or similar DOM operations such as setting the focus on an element.
+// We can no longer modify data relevant to the component or the contents of the component.
+
+// SUMMARY OF LIFECYCLE HOOKS - ORDER OF CALL
+// constructor // no logic here - only use for Dependency Injection - assign dependencies to variables
+// ngOnChanges() // called any time the input of our component changes and once after the constructor
+                 // by the time it is first called, the properties of the component have been filled in
+// ngOnInit() // initalization logic - called once by the framework, not on the constructor
+// ngDoCheck() // implement custom change detection logic
+// ngAfterContentInit() // releated to content projection and local template querying - called once
+                        // here we program initalization logic related to @ContentChild and @ContentChildren
+                        // if we need to programmatically access projected content
+// ngAfterContentChecked() // called every time changed detection runs - last second modification to the data (except the content)
+// ngAfterViewInit() // releated to content projection and local template querying - called once
+                     // here we program initialization logic related to @ViewChild and @ViewChildren
+// ngAfterViewChecked() // called every time changed detection runs - DOM operations such as scrolling and focus
+// ngOnDestroy // whenever the component instance is destroyed - to release resources the component might hold
+                // don't use it to unsubscribe to observables, it is best to use the async pipe
+
+// called every time there's a change detection run:
+// @ngOnChanges() // compare values with previous values of the component logic
+// @ngDoCheck() // used for custom change detection
+// @ngAfterContentChecked() // called after the content part of the component has been checked for changes
+                            // here make last second modifications to the data before the view is renedered
+                            // (except the contents of the component)
+// @ngAfterViewChecked() // DOM direct manipulation (scrolling, setting focus)
