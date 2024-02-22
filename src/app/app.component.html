@@ -8,7 +8,11 @@
 <div>
 
   <div class="demo">
-    <button (click)="onEditCourse()">Edit Course</button>
+    <!-- // if we mark with i18n the tags whose content we want to translate 
+    and then in the terminal we type ng extract-i18n we'll supposedly
+    get a file messages.xlf which will contain the translations.
+    Not sure it is working properly as is.-->
+    <button (click)="onEditCourse()" i18n>Edit Course</button> 
   </div>
 
 
@@ -33,7 +37,16 @@
   and we call the save method and we pass the course emitted by the event-->
    <!-- here we are defining an attribute, attribute 'type' -->
 
-  <course-card *ngFor="let course of courses"
+  <!-- <course-card *ngFor="let course of courses"
+                 (courseChanged)="save($event)"
+                 type="beginner"
+                 [course]="course">
+
+      <course-image [src]="course.iconUrl"></course-image>
+
+   </course-card> -->
+
+  <course-card *ngFor="let course of (courses | filterbyCategory: 'BEGINNER')"
                  (courseChanged)="save($event)"
                  type="beginner"
                  [course]="course">
@@ -41,6 +54,7 @@
       <course-image [src]="course.iconUrl"></course-image>
 
    </course-card>
+
 
   </div>
 
