@@ -16,15 +16,34 @@
 
   </div>
 
-  <div class="course-category" [ngSwitch]="course.category">
+  <!-- i18n INTERNATIONALIZATION- ALTERNATIVE EXPRESSIONS-->
+  <!-- We can replace the following ngSwitch syntax-->
+  <!-- <div class="course-category" [ngSwitch]="course.category">
 
-    <div class="category" *ngSwitchCase="'BEGINNER'">Beginner</div>
+    <div class="category" *ngSwitchCase="'BEGINNER'" i18n>Beginner</div>
 
-    <div class="category" *ngSwitchCase="'INTERMEDIATE'">Intermediate</div>
+    <div class="category" *ngSwitchCase="'INTERMEDIATE'" i18n>Intermediate</div>
 
-    <div class="category" *ngSwitchCase="'ADVANCED'">Advanced</div>
+    <div class="category" *ngSwitchCase="'ADVANCED'" i18n>Advanced</div>
+
+  </div> -->
+
+  <!-- We replace it for the following i18n compatible expression-->
+  <!-- This allows us to link the categories to one another and thus
+  give more context to the translator - than translating each tag individually-->
+  <div class="course-category">
+
+    <div class="category" i18n>
+        { course.category, 
+          select,
+          BEGINNER {Beginner}
+          INTERMEDIATE {Intermediate}
+          ADVANCED {Advanced} 
+        }
+    </div>
 
   </div>
+
 
   <button (click)="onSaveClicked(courseTitle.value)">Save Course</button>
 

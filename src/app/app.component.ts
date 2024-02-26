@@ -54,6 +54,8 @@ export class AppComponent implements OnInit {
   // custom pipes
   courses: Course[] = COURSES;
 
+  coursesTotal = this.courses.length;
+
   // loaded = false;
 
   // declare a reference to the service

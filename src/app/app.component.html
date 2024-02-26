@@ -13,6 +13,13 @@
     get a file messages.xlf which will contain the translations.
     Not sure it is working properly as is.-->
     <button (click)="onEditCourse()" i18n>Edit Course</button> 
+  
+    <div i18n>{ coursesTotal, plural, =0 {No courses available.}
+      =1 {One course is available.}
+      other {A total of {{coursesTotal}} courses are available }
+      }</div>
+
+  
   </div>
 
 
@@ -46,7 +53,16 @@
 
    </course-card> -->
 
-  <course-card *ngFor="let course of (courses | filterbyCategory: 'BEGINNER')"
+  <!-- <course-card *ngFor="let course of (courses | filterbyCategory: 'BEGINNER')"
+                 (courseChanged)="save($event)"
+                 type="beginner"
+                 [course]="course">
+
+      <course-image [src]="course.iconUrl"></course-image>
+
+   </course-card> -->
+
+     <course-card *ngFor="let course of courses"
                  (courseChanged)="save($event)"
                  type="beginner"
                  [course]="course">
@@ -62,5 +78,104 @@
 </div>
 
 
+<!-- i18n INTERNATIONALIZATION - HOW TO PROVIDE EXTRA INFO TO THE TRANSLATOR -->
+<!-- We can mark tags for translation.
+If we mark with i18n the tags whose content we want to translate and then in the terminal 
+we type ng extract-i18n we'll supposedly get a file messages.xlf which will contain the translations.
+Not sure it is working properly as is.
+We could in theory further add to the i18n attribute as in the following example -->
 
+<!-- <h4 i18n="welcome message | Greet the user at the beginning of the course @@welcomemessage">
+      Welcome to the Angular Core Course</h4> -->
+
+      <!-- When we run extract-i18n, the text before the pipe will be the meaning, the text after the pipe
+a description, and the text after the double at a unique identifier.
+The meaning and description serve to give context to the translator to do a better job at translating.
+The unique identifier is best not used, but it is included here for informational purposes
+Angular already generates a unique identifier in the form of a long character string-->
+
+
+<!-- i18n INTERNATIONALIZATION - PLURALIZATION -->
+<!-- With internationalization we can also handle pluralization.
+For example if we have no, one, or multiple courses available.
+In app.component.html we create a tag that says: -->
+
+<!-- <div i18n>{ coursesTotal, plural, =0 {No courses available.}
+                =1 {One course is available.}
+                other {A total of {{coursesTotal}} courses are available }
+                }</div> -->
+
+<!-- Where in app.component.ts we create variable 
+  coursesTotal = this.courses.length;
+  where courses is a previously defined variable with all the courses from the data file or db -->
+
+<!-- We might need to use the ng extract-i18n command and then run the application with npm start-->
+<!-- So the message will display depending on the value of the variable.
+If coursesTotal equals 0, 1 or more than 1, the appropriate message will be displayed.
+And in between double curly braces the value of coursesTotal will be printed, as might be expected-->
+
+<!-- i18n INTERNATIONALIZATION - DEPLOYING TRANSALATED APPLICATION -->
+<!-- So we've marked with i18n the tags we want to translate.
+What's next?
+
+STEP 1. First we need to make sure we are using the correct parameters
+on the ng extract-i18n command. If our application is in english that
+command suffices, but if it is in french (the original application)
+then the command would be
+ng extract-i18n --i18n-locale fr
+This would generate the correct version of the messages.xlf file
+
+STEP 2. We would then send the messages.xlf file to the translation
+department.
+The file we get back, will be in the case we are translating for 
+example an english original site to french the messages.fr.xlf file
+Which would look like the original file, only with some target tags
+nested into each translation unit tag, which would contain the french
+translations.
+
+STEP 3. We would place this messages.fr.xlf file in a folder named
+locale at the src folder. 
+
+--- how to configure to trigger the production build
+STEP 4. Go to Angular.json file.
+Search the configurations property.
+On the same level of the production property
+we create the fr configuration
+"fr": {
+  "aot": true,
+  "outputPath": "dist/angular-course-fr/",
+  "i18nFile": "/src/locale/messages.fr.xlf",
+  "i18nFormat": "xlf",
+  "i18nLocale": "fr",
+  "i18nMissingTranslation": "ignore"
+}
+
+--- how to configure to trigger the development build
+STEP 5. Go to Angular.jso file.
+Search "serve" property, inside it is the configurations property,
+inside it at the same level as the production property
+"fr": {
+  "browserTarget": "angular-course:build:fr"
+}
+
+STEP 6. 
+In the terminal
+ng serve --configuration=fr
+
+This will reload the application and it will be now translated
+to french (if we received the translated file)
+
+STEP 7.
+In the terminal
+ng build --configuration=fr --prod
+
+This will give us inside the dist folder the production version
+of our application.
+
+In the case of an application with multiple languages,
+You will want to build each language version seperately,
+then send them all to production,
+and then your server will decide which it will use when 
+a user visits the site/application
+-->
 
