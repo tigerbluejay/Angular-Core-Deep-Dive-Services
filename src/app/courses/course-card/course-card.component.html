@@ -1,7 +1,10 @@
 <div class="course-card" *ngIf="course" #container>
 
   <div class="course-title">
-    {{ cardIndex || '' + ' ' + course.description }}
+    <!-- {{ cardIndex || '' + ' ' + course.description }} -->
+<!-- We can use an element as a component by adding it here and
+registering it course-card modules file, the schemas property-->
+    <course-title [title] = "course.description"></course-title>
   </div>
 
   <ng-content select="course-image"

@@ -3,7 +3,8 @@ import { Course } from '../model/course';
 
 // this is the name the pipe will take in the html file
 @Pipe({
-    name: 'filterbyCategory'
+    name: 'filterbyCategory',
+    standalone: true
 })
 // here the pipe receives two parameters the array of courses
 // and the category string (BEGINNER / ADVANCED and so on)

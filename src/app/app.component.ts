@@ -1,4 +1,4 @@
-import {AfterViewInit, Attribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, Inject, InjectionToken, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Attribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, Inject, InjectionToken, Injector, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {COURSES, findCourseById} from '../db-data';
 import {Course} from './model/course';
 import {CourseCardComponent} from './courses/course-card/course-card.component';
@@ -8,6 +8,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CoursesService } from './courses/courses.service';
 import { ParseErrorLevel } from '@angular/compiler';
 import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from './config';
+import { createCustomElement } from '@angular/elements';
+import { CourseTitleComponent } from './course-title/course-title.component';
+import { CourseImageComponent } from './courses/course-image/course-image.component';
+import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +29,12 @@ import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from './config';
   // instead of doing "providers" here, we define in 
   // config.ts ProvidedIn to make the injectable "tree shakable"
   // changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    CourseCardComponent,
+    CourseImageComponent,
+    NgForOf
+  ],
+  standalone: true
 })
 
 export class AppComponent implements OnInit {
@@ -71,7 +81,9 @@ export class AppComponent implements OnInit {
     //we also want to inject a plain javascript object
     // here we are injecting a plain javascript object
     // defined in config.ts
-    @Inject(CONFIG_TOKEN) private config: AppConfig) {
+    @Inject(CONFIG_TOKEN) private config: AppConfig,
+    // the injector is for registering an angular component as an element
+    private injector: Injector) {
       console.log(config);  
   }
 
@@ -116,6 +128,10 @@ export class AppComponent implements OnInit {
       // this.loaded = true;      
     }); 
 
+    const htmlElement = createCustomElement(CourseTitleComponent, 
+      {injector:this.injector});
+    
+    customElements.define('course-title', htmlElement);
 
   }
 

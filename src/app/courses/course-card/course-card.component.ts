@@ -16,12 +16,15 @@ import {
 import {Course} from '../../model/course';
 import {CourseImageComponent} from '../course-image/course-image.component';
 import { CoursesService } from '../courses.service';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
     selector: 'course-card',
     templateUrl: './course-card.component.html',
     styleUrls: ['./course-card.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NgIf, CommonModule],
+    standalone: true
 })
 export class CourseCardComponent implements OnInit {
 
