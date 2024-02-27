@@ -11,7 +11,7 @@ import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from './config';
 import { createCustomElement } from '@angular/elements';
 import { CourseTitleComponent } from './course-title/course-title.component';
 import { CourseImageComponent } from './courses/course-image/course-image.component';
-import { NgForOf } from '@angular/common';
+import { NgFor, NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +32,7 @@ import { NgForOf } from '@angular/common';
   imports: [
     CourseCardComponent,
     CourseImageComponent,
-    NgForOf
+    NgForOf, NgFor
   ],
   standalone: true
 })
