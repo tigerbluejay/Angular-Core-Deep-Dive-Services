@@ -1,32 +1,6 @@
 # Angular University Course App
 This project is an educational Angular application designed to showcase best practices in Angular development. It covers key architectural concepts, lifecycle hooks, performance optimizations, dependency injection strategies, internationalization, and Angular elements. This README provides a theoretical and implementation overview for developers seeking to explore the application’s design and functionality.
 
-### Table of Contents
-
-Project Overview
-
-Key Concepts
-
-1. Change Detection
-
-2. Dependency Injection
-
-3. Internationalization (i18n)
-
-4. Angular Lifecycle Hooks
-
-5. Pipes: Pure vs Impure
-
-6. Angular Elements
-
-7. Standalone Components
-
-8. Attribute Decorator
-
-Code Structure Overview
-
-Configuration and Bootstrapping
-
 ### Project Overview
 This Angular application displays a collection of courses using components, services, pipes, and custom directives. It integrates core Angular features such as observables, change detection strategies, and dynamic component rendering. While the project is intended as an instructional tool, the code reflects practices suitable for scalable production-ready applications.
 
