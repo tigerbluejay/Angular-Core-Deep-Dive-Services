@@ -75,7 +75,7 @@ Angular now supports standalone components, reducing the reliance on NgModules. 
 The @Attribute() decorator is used to read static attribute values from HTML and can be useful for performance optimization by avoiding unnecessary bindings.
 
 #### Implementation
-CourseCardComponent uses @Attribute('type') to read the course type ("beginner") directly from the template, bypassing input bindings for immutable data.
+- CourseCardComponent uses @Attribute('type') to read the course type ("beginner") directly from the template, bypassing input bindings for immutable data.
 
 ## Code Structure Overview
 ### File	Purpose
@@ -177,7 +177,7 @@ CoursesService.loadCourses()
 HttpClient GET /api/courses?page=1&pageSize=10
     ↓
 Observable<Course[]> → AppComponent.courses
-```plaintext
+
 CoursesService.saveCourse(course)
     ↓
 HttpClient PUT /api/courses/{id}
