@@ -1,157 +1,269 @@
+# Angular University Course App
+This project is an educational Angular application designed to showcase best practices in Angular development. It covers key architectural concepts, lifecycle hooks, performance optimizations, dependency injection strategies, internationalization, and Angular elements. This README provides a theoretical and implementation overview for developers seeking to explore the application’s design and functionality.
 
-##  Angular Core Deep Dive (Video Course)
+### Table of Contents
 
-This repository contains the code of the [Angular Core Deep Dive](https://angular-university.io/course/angular-course).
+Project Overview
 
-This course repository is updated to Angular v16:
+Key Concepts
 
-![Angular Core Deep Dive](https://s3-us-west-1.amazonaws.com/angular-university/course-images/angular-core-in-depth-small.png)
+1. Change Detection
 
+2. Dependency Injection
 
-# Installation pre-requisites
+3. Internationalization (i18n)
 
-IMPORTANT: Please use Node 18 (Long Term Support version). Note that Node 18 is not yet officially supported by the Angular CLI.
+4. Angular Lifecycle Hooks
 
-# Installing the Angular CLI
+5. Pipes: Pure vs Impure
 
-With the following command the angular-cli will be installed globally in your machine:
+6. Angular Elements
 
-    npm install -g @angular/cli
+7. Standalone Components
 
+8. Attribute Decorator
 
-# How To install this repository
+Code Structure Overview
 
-We can install the master branch using the following commands:
+Configuration and Bootstrapping
 
-    git clone https://github.com/angular-university/angular-course.git
+### Project Overview
+This Angular application displays a collection of courses using components, services, pipes, and custom directives. It integrates core Angular features such as observables, change detection strategies, and dynamic component rendering. While the project is intended as an instructional tool, the code reflects practices suitable for scalable production-ready applications.
 
-This repository is made of several separate npm modules, that are installable separately. For example, to run the au-input module, we can do the following:
+## Key Concepts
+### 1. Change Detection
+#### Conceptual Overview
+Angular’s change detection mechanism ensures the view reflects the current application state. Angular uses "Default" change detection by default, checking the entire component tree on every detected change. For performance, Angular offers "OnPush" change detection, which restricts checks to changes in @Input() values or emitted observables.
 
-    cd angular-course
-    npm install
+#### Implementation
+AppComponent and CourseCardComponent demonstrate both default and OnPush strategies.
 
-Its also possible to install the modules as usual using npm:
+Custom change detection logic is implemented using ChangeDetectorRef and the ngDoCheck() lifecycle hook.
 
-    npm install
+Observable streams are passed to the template with the async pipe, enabling Angular to automatically manage subscriptions and trigger UI updates efficiently.
 
-NPM 5 or above has the big advantage that if you use it you will be installing the exact same dependencies than I installed in my machine, so you wont run into issues caused by semantic versioning updates.
+### 2. Dependency Injection
+#### Conceptual Overview
+Dependency Injection (DI) allows Angular to supply components and services with their dependencies. Angular supports hierarchical DI, tree-shakable providers, and the use of InjectionToken for non-class dependencies.
 
-This should take a couple of minutes. If there are issues, please post the complete error message in the Questions section of the course.
+#### Implementation
+CoursesService is a singleton provided via tree-shakable @Injectable({ providedIn: 'root' }).
 
-# To Run the Development Backend Server
+AppComponent injects a plain JavaScript config object (APP_CONFIG) via CONFIG_TOKEN.
 
-In order to be able to provide realistic examples, we will need in our playground a small REST API backend server. We can start the sample application backend with the following command:
+Advanced DI patterns are shown using @Optional(), @Self(), @SkipSelf(), and @Host() in services and directives.
 
-    npm run server
+Manual provider creation is demonstrated using factory functions and injection tokens.
 
-This is a small Node REST API server.
+### 3. Internationalization (i18n)
+#### Conceptual Overview
+i18n in Angular enables translation of the application into different languages, including pluralization and contextual hints for translators.
 
-# To run the Development UI Server
+#### Implementation
+UI elements are marked with the i18n attribute to extract translatable content using ng extract-i18n.
 
-To run the frontend part of our code, we will use the Angular CLI:
+Pluralization is demonstrated using ICU message syntax.
 
-    npm start
+Deployment to multiple languages involves creating translation files (e.g., messages.fr.xlf) and modifying angular.json to configure builds per language.
 
-The application is visible at port 4200: [http://localhost:4200](http://localhost:4200)
+### 4. Angular Lifecycle Hooks
+#### Conceptual Overview
+Angular components go through a lifecycle from creation to destruction. Lifecycle hooks enable logic at various stages.
 
+#### Implementation
+The project includes examples and annotations for:
 
+ngOnInit() – data loading and component setup.
 
-# Important
+ngDoCheck() – custom change detection.
 
-This repository has multiple branches, have a look at the beginning of each section to see the name of the branch.
+ngAfterContentInit() and ngAfterViewInit() – content and view querying.
 
-At certain points along the course, you will be asked to checkout other remote branches other than master. You can view all branches that you have available remotely using the following command:
+ngAfterContentChecked() and ngAfterViewChecked() – final DOM and data tweaks.
 
-    git branch -a
+ngOnDestroy() – cleanup (discussed but not used).
 
-  The remote branches have their starting in origin, such as for example 1-navigation-and-containers.
+### 5. Pipes: Pure vs Impure
+#### Conceptual Overview
+Pipes transform data in templates. By default, pipes are pure—executed only when their inputs change. Impure pipes re-execute on every change detection run, which can be performance-intensive.
 
-We can checkout the remote branch and start tracking it with a local branch that has the same name, by using the following command:
+#### Implementation
+FilterByCategoryPipe demonstrates a pure pipe by default.
 
-      git checkout -b section-1 origin/1-navigation-and-containers
+An impure version can be created by setting pure: false in the @Pipe() decorator, allowing dynamic filtering based on user interactions.
 
-It's also possible to download a ZIP file for a given branch,  using the branch dropdown on this page on the top left, and then selecting the Clone or Download / Download as ZIP button.
+### 6. Angular Elements
+#### Conceptual Overview
+Angular Elements allow Angular components to be used as custom HTML elements outside of Angular apps. This supports integration with other frameworks or legacy projects.
 
-# Other Courses
+#### Implementation
+CourseTitleComponent is converted to a custom element using createCustomElement() and registered via customElements.define().
 
-# RxJs In Practice Course
+Demonstrates decoupling of Angular's component model from its rendering engine.
 
-If you are looking for the [RxJs In Practice Course](https://angular-university.io/course/rxjs-course), the repo with the full code can be found here:
+### 7. Standalone Components
+#### Conceptual Overview
+Angular now supports standalone components, reducing the reliance on NgModules. This simplifies application structure and aligns with modern Angular practices.
 
-![RxJs In Practice Course](https://s3-us-west-1.amazonaws.com/angular-university/course-images/rxjs-in-practice-course.png)
+#### Implementation
+Most components in this project are marked as standalone: true.
 
+The imports array of each component replaces the need for NgModule declarations.
 
-# NgRx In Depth Course
+Migration instructions and best practices are provided in the comments.
+
+### 8. Attribute Decorator
+#### Conceptual Overview
+The @Attribute() decorator is used to read static attribute values from HTML and can be useful for performance optimization by avoiding unnecessary bindings.
 
-If you are looking for the [NgRx In Depth Course](https://angular-university.io/course/angular-ngrx-course), the repo with the full code can be found here:
+#### Implementation
+CourseCardComponent uses @Attribute('type') to read the course type ("beginner") directly from the template, bypassing input bindings for immutable data.
 
-![NgRx In Depth Course](https://s3-us-west-1.amazonaws.com/angular-university/course-images/angular-ngrx-course.png)
-
-
-
-# Angular PWA Course
-
-If you are looking for the [Angular PWA Course](https://angular-university.io/course/angular-pwa-course), the repo with the full code can be found here:
-
-![Angular PWA Course - Build the future of the Web Today](https://s3-us-west-1.amazonaws.com/angular-university/course-images/angular-pwa-course.png)
-
-# Angular Security Masterclass
-
-If you are looking for the [Angular Security Masterclass](https://angular-university.io/course/angular-security-course), the repo with the full code can be found here:
-
-[Angular Security Masterclass](https://github.com/angular-university/angular-security-course).
-
-![Angular Security Masterclass](https://s3-us-west-1.amazonaws.com/angular-university/course-images/security-cover-small-v2.png)
-
-# Angular Advanced Library Laboratory Course
-
-If you are looking for the Angular Advanced Course, the repo with the full code can be found here:
-
-[Angular Advanced Library Laboratory Course: Build Your Own Library](https://angular-university.io/course/angular-advanced-course).
-
-![Angular Advanced Library Laboratory Course: Build Your Own Library](https://angular-academy.s3.amazonaws.com/thumbnails/advanced_angular-small-v3.png)
-
-
-## RxJs and Reactive Patterns Angular Architecture Course
-
-If you are looking for the RxJs and Reactive Patterns Angular Architecture Course code, the repo with the full code can be found here:
-
-[RxJs and Reactive Patterns Angular Architecture Course](https://angular-university.io/course/reactive-angular-architecture-course)
-
-![RxJs and Reactive Patterns Angular Architecture Course](https://s3-us-west-1.amazonaws.com/angular-academy/blog/images/rxjs-reactive-patterns-small.png)
-
-
-
-## Angular Ngrx Reactive Extensions Architecture Course
-
-If you are looking for the Angular Ngrx Reactive Extensions Architecture Course code, the repo with the full code can be found here:
-
-[Angular Ngrx Reactive Extensions Architecture Course](https://angular-university.io/course/angular2-ngrx)
-
-[Github repo for this course](https://github.com/angular-university/ngrx-course)
-
-![Angular Ngrx Course](https://angular-academy.s3.amazonaws.com/thumbnails/ngrx-angular.png)
-
-
-
-## Angular 2 and Firebase - Build a Web Application Course
-
-If you are looking for the Angular 2 and Firebase - Build a Web Application Course code, the repo with the full code can be found here:
-
-[Angular 2 and Firebase - Build a Web Application](https://angular-university.io/course/build-an-application-with-angular2)
-
-[Github repo for this course](https://github.com/angular-university/angular-firebase-app)
-
-![Angular firebase course](https://angular-academy.s3.amazonaws.com/thumbnails/angular_app-firebase-small.jpg)
-
-
-## Complete Typescript 2 Course - Build A REST API
-
-If you are looking for the Complete Typescript 2 Course - Build a REST API, the repo with the full code can be found here:
-
-[https://angular-university.io/course/typescript-2-tutorial](https://github.com/angular-university/complete-typescript-course)
-
-[Github repo for this course](https://github.com/angular-university/complete-typescript-course)
-
-![Complete Typescript Course](https://angular-academy.s3.amazonaws.com/thumbnails/typescript-2-small.png)
-
+## Code Structure Overview
+### File	Purpose
+app.component.*	Root component: demonstrates lifecycle, service interaction, DI, and change detection.
+courses.service.ts	Handles all HTTP requests and data manipulation.
+course-card.component.*	Displays a course with editing functionality and emits changes.
+course-title.component.*	Rendered both as a component and custom Angular Element.
+filter-by-category.pipe.ts	Custom pipe for filtering courses by category.
+config.ts	Defines and provides an injectable plain object configuration.
+courses.module.ts	Traditional module structure for course components (mostly deprecated in favor of standalone).
+
+### Configuration and Bootstrapping
+Configuration constants are injected using CONFIG_TOKEN and an associated AppConfig interface.
+
+Bootstrapping logic for Angular Elements is located in AppComponent.
+
+Migration paths and commentary are provided for transitioning from NgModules to a fully standalone architecture.
+
+Services like CoursesService are injected using tree-shakable providers to optimize the final build.
+
+## Conclusion
+This application provides a thorough, real-world demonstration of essential Angular concepts. From DI and change detection to internationalization and component lifecycle, this codebase serves both as an educational reference and a practical foundation. Before diving into the implementation, understanding these key concepts will provide clarity and context that make the code easier to follow.
+
+
+# Diagrams
+
+### 1. Component Hierarchy
+
+```plaintext
+AppComponent
+│
+├── course-card *ngFor="courses"
+│   ├── course-title
+│   └── course-image (via <ng-content>)
+│
+└── Custom Angular Element: <course-title> (registered manually)
+```
+
+### 2. Dependency Injection Structure
+
+```plaintext
+[AppComponent]
+    ├── injects CoursesService         <-- providedIn: 'root'
+    ├── injects CONFIG_TOKEN           <-- plain JS object via InjectionToken
+    └── injects Injector               <-- for Angular Element registration
+
+[CourseCardComponent]
+    ├── injects CoursesService         <-- inherited from root or local
+    └── uses @Attribute('type')        <-- reads HTML static attribute
+```
+
+### 3. Change Detection Modes
+
+```plaintext
+Change Detection Strategy
+--------------------------
+
+Default (AppComponent - optionally)
+    ↳ Scans all bindings on all events (keyup, click, async)
+    ↳ Detects changes by comparing previous/current values
+
+OnPush (CourseCardComponent)
+    ↳ Triggers only when:
+        - @Input() changes
+        - Observable emits new value (async pipe)
+        - Event handler is triggered
+
+Custom
+    ↳ Uses ChangeDetectorRef.markForCheck()
+    ↳ Optional ngDoCheck() for custom triggers
+```
+
+### 4. Data Flow: Course Editing
+
+```plaintext
+User Edits Title in <input>
+         ↓
+(keyup)="onTitleChanged()"
+         ↓
+course.description updated locally
+
+User Clicks "Save Course"
+         ↓
+(click)="onSaveClicked()"
+         ↓
+@Output() courseEmitter.emit(course)
+         ↓
+AppComponent receives (courseChanged)
+         ↓
+save(course) → CoursesService.saveCourse(course)
+         ↓
+HTTP PUT /api/courses/{id}
+```
+
+### 5. Service and HTTP Flow
+
+```plaintext
+AppComponent
+    ↓
+CoursesService.loadCourses()
+    ↓
+HttpClient GET /api/courses?page=1&pageSize=10
+    ↓
+Observable<Course[]> → AppComponent.courses
+```plaintext
+CoursesService.saveCourse(course)
+    ↓
+HttpClient PUT /api/courses/{id}
+    ↓
+Header: X-Auth: userId
+```
+
+### 6. Internationalization (i18n) Flow
+
+```plaintext
+Markup with i18n attributes
+    ↓
+Run ng extract-i18n
+    ↓
+Generates messages.xlf
+    ↓
+Send to translation team
+    ↓
+Receive messages.fr.xlf (or other)
+    ↓
+Place in src/locale/
+    ↓
+Configure angular.json build:
+        └── configuration "fr"
+    ↓
+ng build --configuration=fr
+    ↓
+Deploy localized build
+```
+
+### 7. Pipe Execution: Pure vs Impure
+
+```plaintext
+Pure Pipe (default)
+    └── Executed only when reference to input changes
+    └── No re-execution on internal mutation
+
+Impure Pipe (pure: false)
+    └── Executed on every change detection cycle
+    └── Useful when input object mutates (e.g., array content)
+
+Example:
+    *ngFor="let course of courses | filterByCategory:'BEGINNER'"
+```
